@@ -1,38 +1,29 @@
 library flutter_traduora;
 
+import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_traduora/manager/traduora_manager.dart';
+import 'package:flutter_traduora/traduora_helper.dart';
+
+String TRADUORA_URL;
+String GRANT_TYPE;
+String PROJECT_ID;
+String CLIENT_ID;
+String SECRET_KEY;
 
 class Traduora {
-  final String traduoraUrl;
-  final String grantType;
-  final String projectId;
-  final String clientId;
-  final String secretKey;
-
   static Traduora current;
 
-  static String defaultLocale;
-  static String systemLocale = 'en_US';
+  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
-  Traduora(
-      {this.traduoraUrl,
-      this.grantType,
-      this.projectId,
-      this.clientId,
-      this.secretKey});
-
-  static initalize(
-      {traduoraUrl, grantType, projectId, clientId, secretKey}) {
-    if (current == null) {
-      current = new Traduora(
-          traduoraUrl: traduoraUrl,
-          grantType: grantType,
-          projectId: projectId,
-          clientId: clientId,
-          secretKey: secretKey);
-    }
+  static initalize({traduoraUrl, grantType, projectId, clientId, secretKey}) {
+    TRADUORA_URL = traduoraUrl;
+    GRANT_TYPE = grantType;
+    PROJECT_ID = projectId;
+    CLIENT_ID = clientId;
+    SECRET_KEY = secretKey;
   }
 
   static Traduora of(BuildContext context) {
@@ -43,28 +34,12 @@ class Traduora {
     final name = (locale.countryCode?.isEmpty ?? false)
         ? locale.languageCode
         : locale.toString();
-    final localeName = canonicalizedLocale(name);
-//    return initializeMessages(localeName).then((_) {
-//      Traduora.defaultLocale = localeName;
-//
-//      return Traduora.current;
-//    });
-  }
-
-  static canonicalizedLocale(String aLocale) {
-    if (aLocale == null) return getCurrentLocale();
-    if (aLocale == 'C') return 'en_ISO';
-    if (aLocale.length < 5) return aLocale;
-    if (aLocale[2] != '-' && (aLocale[2] != '_')) return aLocale;
-    var region = aLocale.substring(3);
-    // If it's longer than three it's something odd, so don't touch it.
-    if (region.length <= 3) region = region.toUpperCase();
-    return '${aLocale[0]}${aLocale[1]}_$region';
-  }
-
-  static String getCurrentLocale() {
-    defaultLocale ??= systemLocale;
-    return defaultLocale;
+    final localeName = TraduoraHelper.canonicalizedLocale(name);
+    return TraduoraManager.initializeMessages(localeName).then((_) {
+      TraduoraManager.defaultLocale = localeName;
+      Traduora.current = Traduora();
+      return Traduora.current;
+    });
   }
 }
 
@@ -73,8 +48,9 @@ class AppLocalizationDelegate extends LocalizationsDelegate<Traduora> {
 
   List<Locale> get supportedLocales {
     return const <Locale>[
-      Locale.fromSubtags(languageCode: 'vi', countryCode: 'VN'),
-      Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(
+          languageCode: 'vi', countryCode: 'VN', scriptCode: "Tiếng Việt"),
+      Locale.fromSubtags(languageCode: 'en', scriptCode: "English"),
     ];
   }
 
