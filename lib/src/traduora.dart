@@ -1,10 +1,9 @@
-
-
 import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_traduora/src/manager/traduora_manager.dart';
+import 'package:flutter_traduora/src/manager/traduora_storage_manager.dart';
 import 'package:flutter_traduora/src/traduora_helper.dart';
 
 String TRADUORA_URL;
@@ -18,12 +17,18 @@ class Traduora {
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
-  static initalize({traduoraUrl, grantType, projectId, clientId, secretKey}) {
+  static initalize({traduoraUrl, grantType, projectId, clientId, secretKey})async {
     TRADUORA_URL = traduoraUrl;
     GRANT_TYPE = grantType;
     PROJECT_ID = projectId;
     CLIENT_ID = clientId;
     SECRET_KEY = secretKey;
+    TraduoraStorageManager.initalize();
+    bool authencated = await TraduoraManager.authenticateTraduora();
+    if (authencated){
+      TraduoraManager.fetchSupportedLocale();
+      TraduoraManager.fetchAllMessages();
+    }
   }
 
   static Traduora of(BuildContext context) {
@@ -40,6 +45,10 @@ class Traduora {
       Traduora.current = Traduora();
       return Traduora.current;
     });
+  }
+
+  static String getString(String key) {
+    TraduoraManager.currentTranslation[key] ?? "";
   }
 }
 

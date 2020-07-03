@@ -5,6 +5,7 @@ import 'package:flutter_traduora/src/manager/traduora_manager.dart';
 typedef Future<dynamic> LibraryLoader();
 
 class TraduoraHelper {
+
   static canonicalizedLocale(String aLocale) {
     if (aLocale == null) return getCurrentLocale();
     if (aLocale == 'C') return 'en_ISO';
