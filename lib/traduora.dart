@@ -1,4 +1,4 @@
-library flutter_traduora;
+
 
 import 'dart:collection';
 import 'dart:ui';
