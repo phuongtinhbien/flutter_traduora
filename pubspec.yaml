@@ -49,7 +49,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: vn.phuongvu.traduora
+        package: com.vu.phu.flutter_traduora
         pluginClass: FlutterTraduoraPlugin
       ios:
         pluginClass: FlutterTraduoraPlugin
