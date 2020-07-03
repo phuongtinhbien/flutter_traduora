@@ -23,7 +23,7 @@ class Traduora {
     PROJECT_ID = projectId;
     CLIENT_ID = clientId;
     SECRET_KEY = secretKey;
-    TraduoraStorageManager.initalize();
+    await TraduoraStorageManager.initalize();
     bool authencated = await TraduoraManager.authenticateTraduora();
     if (authencated){
       await TraduoraManager.fetchSupportedLocale();
