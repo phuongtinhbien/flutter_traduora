@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter_traduora/flutter_traduora.dart';
 import 'package:flutter_traduora/src/data/model/locale_model.dart';
@@ -104,6 +105,7 @@ class TraduoraManager {
           .getRestClient()
           .exportProject(PROJECT_ID, localeCode, FORMAT_EXPORT);
       TraduoraStorageManager.storeExportTranslation(localeCode, response);
+      print(json.encode(response));
 
       if (defaultLocale == localeCode) {
         currentTranslation = response;
