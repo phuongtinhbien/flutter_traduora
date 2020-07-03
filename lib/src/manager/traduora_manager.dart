@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:flutter_traduora/traduora_helper.dart';
+import 'package:flutter_traduora/src/traduora_helper.dart';
 
 class TraduoraManager {
 

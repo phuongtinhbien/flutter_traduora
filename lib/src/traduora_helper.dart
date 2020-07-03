@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:flutter_traduora/manager/traduora_manager.dart';
+import 'package:flutter_traduora/src/manager/traduora_manager.dart';
 
 typedef Future<dynamic> LibraryLoader();
 

@@ -4,8 +4,8 @@ import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_traduora/manager/traduora_manager.dart';
-import 'package:flutter_traduora/traduora_helper.dart';
+import 'package:flutter_traduora/src/manager/traduora_manager.dart';
+import 'package:flutter_traduora/src/traduora_helper.dart';
 
 String TRADUORA_URL;
 String GRANT_TYPE;
