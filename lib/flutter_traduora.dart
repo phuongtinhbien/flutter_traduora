@@ -1,4 +1,4 @@
 library flutter_traduora;
 
-export 'traduora.dart';
-export 'traduora_helper.dart';
+export 'src/traduora.dart';
+export 'src/traduora_helper.dart';
