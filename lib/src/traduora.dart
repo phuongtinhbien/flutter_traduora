@@ -26,8 +26,8 @@ class Traduora {
     TraduoraStorageManager.initalize();
     bool authencated = await TraduoraManager.authenticateTraduora();
     if (authencated){
-      TraduoraManager.fetchSupportedLocale();
-      TraduoraManager.fetchAllMessages();
+      await TraduoraManager.fetchSupportedLocale();
+      await TraduoraManager.fetchAllMessages();
     }
   }
 

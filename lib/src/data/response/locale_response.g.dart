@@ -9,8 +9,9 @@ part of 'locale_response.dart';
 LocaleResponse _$LocaleResponseFromJson(Map<String, dynamic> json) {
   return LocaleResponse(
     (json['data'] as List)
-        ?.map((e) =>
-            e == null ? null : LocaleModel.fromJson(e as Map<String, dynamic>))
+        ?.map((e) => e == null
+            ? null
+            : SupportedLocale.fromJson(e as Map<String, dynamic>))
         ?.toList(),
   );
 }

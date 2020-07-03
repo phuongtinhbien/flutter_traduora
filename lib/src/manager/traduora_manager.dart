@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter_traduora/flutter_traduora.dart';
 import 'package:flutter_traduora/src/data/model/locale_model.dart';
+import 'package:flutter_traduora/src/data/model/supported_locale.dart';
 import 'package:flutter_traduora/src/data/request/authenticate_request.dart';
 import 'package:flutter_traduora/src/data/response/authentication_response.dart';
 import 'package:flutter_traduora/src/data/response/locale_response.dart';
@@ -28,11 +29,13 @@ class TraduoraManager {
       return new Future.value(false);
     }
     print("availableLocale: "+availableLocale);
+
     var lib = TraduoraStorageManager.getTranslation(availableLocale);
     if (lib == null){
-      fetchMessages(availableLocale);
+      await fetchMessages(availableLocale);
     } else {
       currentTranslation = lib;
+      fetchAllMessages();
     }
     //TODO change value curent at hashmap
     return new Future.value(true);
@@ -68,7 +71,9 @@ class TraduoraManager {
       if (response != null &&
           response.data != null &&
           response.data.isNotEmpty) {
-        supportedLocale.addAll(response.data);
+        for(SupportedLocale i in response.data) {
+          supportedLocale.add(i.locale);
+        }
         if (defaultLocale == null || defaultLocale.isEmpty) {
           defaultLocale = supportedLocale[0].code;
         }

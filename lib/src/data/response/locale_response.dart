@@ -1,12 +1,13 @@
 import 'package:flutter_traduora/src/data/model/locale_model.dart';
+import 'package:flutter_traduora/src/data/model/supported_locale.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'locale_response.g.dart';
 
 @JsonSerializable()
 class LocaleResponse {
-  
-  List<LocaleModel> data;
+
+  List<SupportedLocale> data;
 
   LocaleResponse(this.data);
 
