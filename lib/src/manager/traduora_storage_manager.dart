@@ -41,6 +41,10 @@ class TraduoraStorageManager {
     preferences.setString("${PREFIX}_${localeCode}", json.encode(data.toString()));
   }
   static Map<String, String> getTranslation(String localeCode){
-    return json.decode(preferences.getString("${PREFIX}_${localeCode}"));
+    final String value = preferences.getString("${PREFIX}_${localeCode}");
+    if (value != null){
+      return json.decode(value);
+    }
+    return new Map();
   }
 }
