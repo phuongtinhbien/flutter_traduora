@@ -47,7 +47,7 @@ class Traduora {
     });
   }
 
-  static String getString(String key) {
+  String getString(String key) {
     TraduoraManager.currentTranslation[key] ?? "";
   }
 }
