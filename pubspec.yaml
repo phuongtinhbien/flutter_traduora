@@ -2,7 +2,7 @@ name: flutter_traduora
 description: A new Flutter Traduora.
 version: 0.0.1
 author:
-homepage:
+homepage: https://github.com/phuongtinhbien/flutter_traduora
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -10,9 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  bloc: ^4.0.0
-  flutter_bloc: ^4.0.1
+  bloc: ^5.0.0
+  flutter_bloc: ^5.0.0
   equatable: ^1.2.0
   rxdart: ^0.24.1
   shared_preferences: ^0.5.7+3
@@ -47,6 +46,13 @@ targets:
 
 # The following section is specific to Flutter.
 flutter:
+  plugin:
+    platforms:
+      android:
+        package: vn.phuongvu.traduora
+        pluginClass: FlutterTraduoraPlugin
+      ios:
+        pluginClass: FlutterTraduoraPlugin
 
   # To add assets to your package, add an assets section, like this:
   # assets:
