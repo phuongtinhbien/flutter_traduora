@@ -27,7 +27,7 @@ class TraduoraManager {
     if (availableLocale == null) {
       return new Future.value(false);
     }
-    print(availableLocale);
+    print("availableLocale: "+availableLocale);
     var lib = TraduoraStorageManager.getTranslation(availableLocale);
     if (lib == null){
       fetchMessages(availableLocale);
