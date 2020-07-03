@@ -17,17 +17,19 @@ class Traduora {
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
-  static initalize({traduoraUrl, grantType, projectId, clientId, secretKey})async {
+  static initalize({traduoraUrl, grantType, projectId, clientId, secretKey}) async {
     TRADUORA_URL = traduoraUrl;
     GRANT_TYPE = grantType;
     PROJECT_ID = projectId;
     CLIENT_ID = clientId;
     SECRET_KEY = secretKey;
+    print({traduoraUrl, grantType, projectId, clientId, secretKey}.toString());
     await TraduoraStorageManager.initalize();
     bool authencated = await TraduoraManager.authenticateTraduora();
     if (authencated){
-      await TraduoraManager.fetchSupportedLocale();
-      await TraduoraManager.fetchAllMessages();
+//      await TraduoraManager.fetchSupportedLocale();
+//      await TraduoraManager.fetchAllMessages();
+    await TraduoraManager.fetchMessages(TraduoraManager.defaultLocale);
     }
   }
 

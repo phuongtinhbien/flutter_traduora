@@ -5,11 +5,11 @@ part 'authenticate_request.g.dart';
 
 @JsonSerializable()
 class AuthenticateRequest {
-  @JsonKey(name: "grantType", disallowNullValue: true)
+  @JsonKey(name: "grant_type", disallowNullValue: true)
   String grantType;
-  @JsonKey(name: "clientId", disallowNullValue: true)
+  @JsonKey(name: "client_id", disallowNullValue: true)
   String clientId;
-  @JsonKey(name: "clientSecret", disallowNullValue: true)
+  @JsonKey(name: "client_secret", disallowNullValue: true)
   String clientSecret;
 
 

@@ -54,8 +54,8 @@ class TraduoraManager {
         TraduoraStorageManager.storeToken(response.accessToken);
         TraduoraStorageManager.storeExpiredDate(DateTime.now().millisecond +
             int.parse(response.expiresIn.replaceAll("s", "")));
-        if (!TraduoraStorageManager.getToken().isNotEmpty) {
-          apiProvider.notifyChange();
+        if (TraduoraStorageManager.getToken().isNotEmpty) {
+          apiProvider = new ApiProvider();
           return true;
         }
       }
@@ -68,7 +68,7 @@ class TraduoraManager {
   static Future<bool> fetchSupportedLocale() async {
     try {
       LocaleResponse response =
-          await apiProvider.getRestClient().getSupportedLocales();
+          await apiProvider.getRestClient().getSupportedLocales(PROJECT_ID);
       if (response != null &&
           response.data != null &&
           response.data.isNotEmpty) {
@@ -100,18 +100,18 @@ class TraduoraManager {
   }
 
   static Future<bool> fetchMessages(String localeCode) async {
-    try {
+//    try {
       Map<String, String> response = await apiProvider
           .getRestClient()
           .exportProject(PROJECT_ID, localeCode, FORMAT_EXPORT);
       TraduoraStorageManager.storeExportTranslation(localeCode, response);
-      print(json.encode(response));
+      print("localeCode: " +json.encode(response));
 
       if (defaultLocale == localeCode) {
         currentTranslation = response;
       }
-    } catch (ignore) {
-      return false;
-    }
+//    } catch (ignore) {
+//      return false;
+//    }
   }
 }

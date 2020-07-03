@@ -5,10 +5,11 @@ part 'authentication_response.g.dart';
 
 @JsonSerializable()
 class AuthenticationResponse {
-
-
+  @JsonKey(name:"access_token")
   String accessToken;
+  @JsonKey(name:"expires_in")
   String expiresIn;
+  @JsonKey(name:"token_type")
   String tokenType;
 
 

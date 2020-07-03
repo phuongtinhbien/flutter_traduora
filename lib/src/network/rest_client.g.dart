@@ -98,11 +98,13 @@ class _RestClient implements RestClient {
   }
 
   @override
-  getSupportedLocales() async {
+  getSupportedLocales(projectId) async {
+    ArgumentError.checkNotNull(projectId, 'projectId');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final Response<Map<String, dynamic>> _result = await _dio.request('locales',
+    final Response<Map<String, dynamic>> _result = await _dio.request(
+        'projects/$projectId/translations',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'GET',

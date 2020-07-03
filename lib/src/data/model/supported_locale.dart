@@ -6,8 +6,11 @@ part 'supported_locale.g.dart';
 
 @JsonSerializable()
 class SupportedLocale {
+  @JsonKey(name: "id")
   String id;
+  @JsonKey(name: "date")
   DateModel date;
+  @JsonKey(name: "locale")
   LocaleModel locale;
 
 

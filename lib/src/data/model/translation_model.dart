@@ -8,7 +8,6 @@ part 'translation_model.g.dart';
 @JsonSerializable()
 class TranslationModel {
 
-
   DateModel date;
   String id;
   LocaleModel locale;

@@ -8,11 +8,11 @@ part of 'authenticate_request.dart';
 
 AuthenticateRequest _$AuthenticateRequestFromJson(Map<String, dynamic> json) {
   $checkKeys(json,
-      disallowNullValues: const ['grantType', 'clientId', 'clientSecret']);
+      disallowNullValues: const ['grant_type', 'client_id', 'client_secret']);
   return AuthenticateRequest()
-    ..grantType = json['grantType'] as String
-    ..clientId = json['clientId'] as String
-    ..clientSecret = json['clientSecret'] as String;
+    ..grantType = json['grant_type'] as String
+    ..clientId = json['client_id'] as String
+    ..clientSecret = json['client_secret'] as String;
 }
 
 Map<String, dynamic> _$AuthenticateRequestToJson(AuthenticateRequest instance) {
@@ -24,8 +24,8 @@ Map<String, dynamic> _$AuthenticateRequestToJson(AuthenticateRequest instance) {
     }
   }
 
-  writeNotNull('grantType', instance.grantType);
-  writeNotNull('clientId', instance.clientId);
-  writeNotNull('clientSecret', instance.clientSecret);
+  writeNotNull('grant_type', instance.grantType);
+  writeNotNull('client_id', instance.clientId);
+  writeNotNull('client_secret', instance.clientSecret);
   return val;
 }

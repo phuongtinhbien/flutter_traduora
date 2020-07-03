@@ -35,6 +35,6 @@ abstract class RestClient {
   Future<TranslationResponse> getTranslations(
       @Path("projectId") String projectId);
 
-  @GET("locales")
-  Future<LocaleResponse> getSupportedLocales();
+  @GET("projects/{projectId}/translations")
+  Future<LocaleResponse> getSupportedLocales(@Path("projectId") String projectId);
 }
