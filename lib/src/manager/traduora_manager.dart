@@ -33,8 +33,10 @@ class TraduoraManager {
     }
 
     var lib = TraduoraStorageManager.getTranslation(availableLocale);
-    if (lib == null) {
+    if (lib == null || (lib as Map).isEmpty) {
       await fetchMessages(availableLocale);
+      lib = TraduoraStorageManager.getTranslation(availableLocale);
+      currentTranslation = lib;
     } else {
       currentTranslation = lib;
       fetchAllMessages();
@@ -109,7 +111,7 @@ class TraduoraManager {
       final res = jsonDecode(response);
       TraduoraStorageManager.storeExportTranslation(localeCode, res);
       if (defaultLocale == localeCode) {
-        currentTranslation = Map<String, dynamic>.from(res);
+        currentTranslation = res;
       }
       return true;
     } catch (ignore) {

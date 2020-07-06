@@ -28,26 +28,23 @@ class Traduora {
     if (TraduoraStorageManager.getToken().isEmpty ||
         DateTime.now().millisecondsSinceEpoch >
             TraduoraStorageManager.getExpiredDate()) {
-      await generateFirstLoading();
+      bool authencated = await TraduoraManager.authenticateTraduora();
+      if (authencated) {
+        await TraduoraManager.fetchSupportedLocale();
+        await TraduoraManager.fetchAllMessages();
+        return true;
+      }
     } else {
       TraduoraManager.fetchAllMessages();
     }
   }
 
-  static Future<bool> generateFirstLoading() async {
-    bool authencated = await TraduoraManager.authenticateTraduora();
-    if (authencated) {
-      await TraduoraManager.fetchSupportedLocale();
-      await TraduoraManager.fetchAllMessages();
-      return true;
-    }
-  }
 
   static Traduora of(BuildContext context) {
     return Localizations.of<Traduora>(context, Traduora);
   }
 
-  static Future<Traduora> load(Locale locale) async {
+  static Future<Traduora> load(Locale locale) {
     final name = (locale.countryCode?.isEmpty ?? false)
         ? locale.languageCode
         : locale.toString();
@@ -61,6 +58,9 @@ class Traduora {
 
   String getString(String key) {
     return TraduoraManager.currentTranslation[key] ?? "";
+  }
+  String getCurrentTranslation() {
+    return TraduoraManager.currentTranslation.toString();
   }
 }
 
@@ -92,9 +92,8 @@ class AppLocalizationDelegate extends LocalizationsDelegate<Traduora> {
 //      return supportedLocales;
 //    }
     return const <Locale>[
-      Locale.fromSubtags(
-          languageCode: 'vi', countryCode: 'VN', scriptCode: "Tiếng Việt"),
-      Locale.fromSubtags(languageCode: 'en', scriptCode: "English"),
+      Locale.fromSubtags(languageCode: 'vi', countryCode: 'VN',),
+      Locale.fromSubtags(languageCode: 'en', ),
     ];
   }
 
@@ -105,7 +104,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<Traduora> {
   Future<Traduora> load(Locale locale) => Traduora.load(locale);
 
   @override
-  bool shouldReload(AppLocalizationDelegate old) => this != old;
+  bool shouldReload(AppLocalizationDelegate old) => false;
 
   bool _isSupported(Locale locale) {
     if (locale != null) {
