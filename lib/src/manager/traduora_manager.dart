@@ -16,30 +16,31 @@ const String FORMAT_EXPORT = "jsonflat";
 class TraduoraManager {
   static String defaultLocale;
   static String systemLocale = 'en_US';
-  static Map<String, String> currentTranslation = new Map();
+  static var currentTranslation;
   static ApiProvider apiProvider = new ApiProvider();
-
 
   static List<LocaleModel> supportedLocale = [];
 
   static Future<bool> initializeMessages(String localeName) async {
     var availableLocale = TraduoraHelper.verifiedLocale(
-        localeName, (locale) => supportedLocale.any((element) => element.code.contains(locale)) != null,
+        localeName,
+        (locale) =>
+            supportedLocale.any((element) => element.code.contains(locale)) !=
+            null,
         onFailure: (_) => null);
     if (availableLocale == null) {
-      return new Future.value(false);
+      return false;
     }
-    print("availableLocale: "+availableLocale);
 
     var lib = TraduoraStorageManager.getTranslation(availableLocale);
-    if (lib == null){
+    if (lib == null) {
       await fetchMessages(availableLocale);
     } else {
       currentTranslation = lib;
       fetchAllMessages();
     }
     //TODO change value curent at hashmap
-    return new Future.value(true);
+    return true;
   }
 
   static Future<bool> authenticateTraduora() async {
@@ -72,7 +73,7 @@ class TraduoraManager {
       if (response != null &&
           response.data != null &&
           response.data.isNotEmpty) {
-        for(SupportedLocale i in response.data) {
+        for (SupportedLocale i in response.data) {
           supportedLocale.add(i.locale);
         }
         if (defaultLocale == null || defaultLocale.isEmpty) {
@@ -100,18 +101,19 @@ class TraduoraManager {
   }
 
   static Future<bool> fetchMessages(String localeCode) async {
-//    try {
-      Map<String, String> response = await apiProvider
+    try {
+      String response = await apiProvider
           .getRestClient()
           .exportProject(PROJECT_ID, localeCode, FORMAT_EXPORT);
-      TraduoraStorageManager.storeExportTranslation(localeCode, response);
-      print("localeCode: " +json.encode(response));
-
+      print(response);
+      final res = jsonDecode(response);
+      TraduoraStorageManager.storeExportTranslation(localeCode, res);
       if (defaultLocale == localeCode) {
-        currentTranslation = response;
+        currentTranslation = Map<String, dynamic>.from(res);
       }
-//    } catch (ignore) {
-//      return false;
-//    }
+      return true;
+    } catch (ignore) {
+      return false;
+    }
   }
 }

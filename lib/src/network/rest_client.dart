@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_traduora/src/data/request/authenticate_request.dart';
@@ -25,7 +26,7 @@ abstract class RestClient {
   Future<ProjectResponse> getProject(@Path("projectId") String projectId);
 
   @GET("projects/{projectId}/exports")
-  Future exportProject(
+  Future<String> exportProject(
       @Path("projectId") String projectId,
       @Query("locale") String locale,
       @Query("format") String format);

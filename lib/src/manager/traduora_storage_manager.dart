@@ -27,23 +27,30 @@ class TraduoraStorageManager {
     }
   }
 
-  static storeToken (String token){
-    preferences.setString(TOKEN, token??"");
+  static storeToken(String token) {
+    preferences.setString(TOKEN, token ?? "");
   }
-  static String getToken (){
+
+  static String getToken() {
     return preferences.getString(TOKEN);
   }
-  static storeExpiredDate (int date){
+
+  static storeExpiredDate(int date) {
     preferences.setInt(EXPIRED_TOKEN_DATE, date);
   }
 
-  static storeExportTranslation(String localeCode, Map<String, String> data){
-    preferences.setString("${PREFIX}_${localeCode}", json.encode(data.toString()));
+  static int getExpiredDate() {
+    return preferences.getInt(EXPIRED_TOKEN_DATE)?? 0;
   }
-  static Map<String, String> getTranslation(String localeCode){
+
+  static storeExportTranslation(String localeCode, data) {
+    preferences.setString("${PREFIX}_${localeCode}", json.encode(data));
+  }
+
+  static dynamic getTranslation(String localeCode) {
     final String value = preferences.getString("${PREFIX}_${localeCode}");
-    if (value != null){
-      return json.decode(value);
+    if (value != null) {
+      return Map<String, dynamic>.from(json.decode(value));
     }
     return new Map();
   }

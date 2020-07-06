@@ -66,7 +66,8 @@ class _RestClient implements RestClient {
       r'format': format
     };
     final _data = <String, dynamic>{};
-    final Response _result = await _dio.request('projects/$projectId/exports',
+    final Response<String> _result = await _dio.request(
+        'projects/$projectId/exports',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'GET',

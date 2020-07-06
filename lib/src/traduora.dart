@@ -17,19 +17,29 @@ class Traduora {
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
-  static initalize({traduoraUrl, grantType, projectId, clientId, secretKey}) async {
+  static initalize(
+      {traduoraUrl, grantType, projectId, clientId, secretKey}) async {
     TRADUORA_URL = traduoraUrl;
     GRANT_TYPE = grantType;
     PROJECT_ID = projectId;
     CLIENT_ID = clientId;
     SECRET_KEY = secretKey;
-    print({traduoraUrl, grantType, projectId, clientId, secretKey}.toString());
+    if (TraduoraStorageManager.getToken().isEmpty ||
+        DateTime.now().millisecondsSinceEpoch >
+            TraduoraStorageManager.getExpiredDate()) {
+      await generateFirstLoading();
+    } else {
+      TraduoraManager.fetchAllMessages();
+    }
+  }
+
+  static Future<bool> generateFirstLoading() async {
     await TraduoraStorageManager.initalize();
     bool authencated = await TraduoraManager.authenticateTraduora();
-    if (authencated){
-//      await TraduoraManager.fetchSupportedLocale();
-//      await TraduoraManager.fetchAllMessages();
-    await TraduoraManager.fetchMessages(TraduoraManager.defaultLocale);
+    if (authencated) {
+      await TraduoraManager.fetchSupportedLocale();
+      await TraduoraManager.fetchAllMessages();
+      return true;
     }
   }
 
@@ -37,20 +47,21 @@ class Traduora {
     return Localizations.of<Traduora>(context, Traduora);
   }
 
-  static Future<Traduora> load(Locale locale) {
+  static Future<Traduora> load(Locale locale) async {
     final name = (locale.countryCode?.isEmpty ?? false)
         ? locale.languageCode
         : locale.toString();
     final localeName = TraduoraHelper.canonicalizedLocale(name);
-    return TraduoraManager.initializeMessages(localeName).then((_) {
+    bool res = await TraduoraManager.initializeMessages(localeName);
+    if (res) {
       TraduoraManager.defaultLocale = localeName;
       Traduora.current = Traduora();
       return Traduora.current;
-    });
+    }
   }
 
   String getString(String key) {
-    TraduoraManager.currentTranslation[key] ?? "";
+    return TraduoraManager.currentTranslation[key] ?? "";
   }
 }
 
