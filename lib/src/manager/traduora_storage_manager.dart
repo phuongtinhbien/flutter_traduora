@@ -52,6 +52,6 @@ class TraduoraStorageManager {
     if (value != null) {
       return Map<String, dynamic>.from(json.decode(value));
     }
-    return new Map();
+    return null;
   }
 }
