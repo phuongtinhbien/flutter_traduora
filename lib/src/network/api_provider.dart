@@ -38,27 +38,27 @@ class ApiProvider {
   }
 
   RestClient initRestClient() {
-    if (Platform.isAndroid) {
-      (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (client) {
-        // Hook into the findProxy callback to set the client's proxy.
-        // This is a workaround to allow Charles to receive
-        // SSL payloads when your app is running on Android.
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => Platform.isAndroid;
-      };
-      if (kDebugMode) {
-        _dio.interceptors.add(PrettyDioLogger(
-          requestHeader: true,
-          requestBody: true,
-          responseBody: true,
-          responseHeader: false,
-          error: true,
-          compact: true,
-          maxWidth: 90,
-        ));
-      }
-    }
+//    if (Platform.isAndroid) {
+//      (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+//          (client) {
+//        // Hook into the findProxy callback to set the client's proxy.
+//        // This is a workaround to allow Charles to receive
+//        // SSL payloads when your app is running on Android.
+//        client.badCertificateCallback =
+//            (X509Certificate cert, String host, int port) => Platform.isAndroid;
+//      };
+//      if (kDebugMode) {
+//        _dio.interceptors.add(PrettyDioLogger(
+//          requestHeader: true,
+//          requestBody: true,
+//          responseBody: true,
+//          responseHeader: false,
+//          error: true,
+//          compact: true,
+//          maxWidth: 90,
+//        ));
+//      }
+//    }
 
     _options.connectTimeout = TIME_OUT;
     _options.receiveTimeout = TIME_OUT;
@@ -69,7 +69,7 @@ class ApiProvider {
 
     try {
       //Token
-      String token = TraduoraStorageManager.preferences.getString(TOKEN) ?? "";
+      String token = TraduoraStorageManager.getToken() ?? "";
       if (token.isNotEmpty) {
         _options.headers["Authorization"] = "Bearer ${token}";
       }

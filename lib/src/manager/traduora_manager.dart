@@ -35,8 +35,6 @@ class TraduoraManager {
     var lib = TraduoraStorageManager.getTranslation(availableLocale);
     if (lib == null) {
       await fetchMessages(availableLocale);
-      lib = TraduoraStorageManager.getTranslation(availableLocale);
-      currentTranslation = lib;
     } else {
       currentTranslation = lib;
       fetchAllMessages();
