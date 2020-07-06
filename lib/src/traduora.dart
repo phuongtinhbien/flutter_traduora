@@ -30,7 +30,7 @@ class Traduora {
             TraduoraStorageManager.getExpiredDate()) {
       bool authencated = await TraduoraManager.authenticateTraduora();
       if (authencated) {
-        await TraduoraManager.fetchSupportedLocale();
+//        await TraduoraManager.fetchSupportedLocale();
         await TraduoraManager.fetchAllMessages();
         return true;
       }

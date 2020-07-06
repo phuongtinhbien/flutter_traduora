@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_traduora/flutter_traduora.dart';
 import 'package:flutter_traduora/src/data/model/locale_model.dart';
 import 'package:flutter_traduora/src/data/model/supported_locale.dart';
@@ -19,15 +20,22 @@ class TraduoraManager {
   static var currentTranslation;
   static ApiProvider apiProvider = new ApiProvider();
 
-  static List<LocaleModel> supportedLocale = [];
+  static List<Locale> supportedLocale = [
+    Locale.fromSubtags(
+      languageCode: 'vi',
+      countryCode: 'VN',
+    ),
+    Locale.fromSubtags(
+      languageCode: 'en',
+    ),
+  ];
 
   static Future<bool> initializeMessages(String localeName) async {
-    var availableLocale = TraduoraHelper.verifiedLocale(
-        localeName,
-        (locale) =>
-            supportedLocale.any((element) => element.code.contains(locale)) !=
-            null,
-        onFailure: (_) => null);
+    var availableLocale = TraduoraHelper.verifiedLocale(localeName, (locale) {
+      bool compare = supportedLocale.any((element) =>
+          "${element.languageCode}_${element.countryCode}".contains(locale));
+      return compare;
+    }, onFailure: (_) => null);
     if (availableLocale == null) {
       return false;
     }
@@ -35,9 +43,11 @@ class TraduoraManager {
     var lib = TraduoraStorageManager.getTranslation(availableLocale);
     if (lib == null) {
       await fetchMessages(availableLocale);
+      currentTranslation =
+          TraduoraStorageManager.getTranslation(availableLocale);
     } else {
       currentTranslation = lib;
-      fetchAllMessages();
+//      fetchAllMessages();
     }
     //TODO change value curent at hashmap
     return true;
@@ -66,32 +76,12 @@ class TraduoraManager {
     }
   }
 
-  static Future<bool> fetchSupportedLocale() async {
-    try {
-      LocaleResponse response =
-          await apiProvider.getRestClient().getSupportedLocales(PROJECT_ID);
-      if (response != null &&
-          response.data != null &&
-          response.data.isNotEmpty) {
-        for (SupportedLocale i in response.data) {
-          supportedLocale.add(i.locale);
-        }
-        if (defaultLocale == null || defaultLocale.isEmpty) {
-          defaultLocale = supportedLocale[0].code;
-        }
-        return true;
-      }
-      return false;
-    } catch (ignore) {
-      return false;
-    }
-  }
 
   static Future<bool> fetchAllMessages() async {
     if (supportedLocale.isNotEmpty) {
       try {
         for (int i = 0; i < supportedLocale.length; i++) {
-          fetchMessages(supportedLocale[i].code);
+          fetchMessages(supportedLocale[i].languageCode);
         }
         return true;
       } catch (ignore) {

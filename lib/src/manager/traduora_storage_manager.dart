@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:localstorage/localstorage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 const String TOKEN = "token";
 const String EXPIRED_TOKEN_DATE = "expired_token_date";
@@ -35,7 +32,7 @@ class TraduoraStorageManager {
   }
 
   static String getToken() {
-    return preferences.getItem(TOKEN)??"";
+    return preferences.getItem(TOKEN) ?? "";
   }
 
   static storeExpiredDate(int date) {
@@ -43,7 +40,7 @@ class TraduoraStorageManager {
   }
 
   static int getExpiredDate() {
-    return preferences.getItem(EXPIRED_TOKEN_DATE)?? 0;
+    return preferences.getItem(EXPIRED_TOKEN_DATE) ?? 0;
   }
 
   static storeExportTranslation(String localeCode, data) {
