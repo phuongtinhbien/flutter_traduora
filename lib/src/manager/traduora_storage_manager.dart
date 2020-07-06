@@ -32,7 +32,7 @@ class TraduoraStorageManager {
   }
 
   static String getToken() {
-    return preferences.getString(TOKEN);
+    return preferences.getString(TOKEN)??"";
   }
 
   static storeExpiredDate(int date) {

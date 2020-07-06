@@ -1,7 +1,7 @@
-import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_traduora/src/data/model/locale_model.dart';
 import 'package:flutter_traduora/src/manager/traduora_manager.dart';
 import 'package:flutter_traduora/src/manager/traduora_storage_manager.dart';
 import 'package:flutter_traduora/src/traduora_helper.dart';
@@ -24,6 +24,7 @@ class Traduora {
     PROJECT_ID = projectId;
     CLIENT_ID = clientId;
     SECRET_KEY = secretKey;
+    await TraduoraStorageManager.initalize();
     if (TraduoraStorageManager.getToken().isEmpty ||
         DateTime.now().millisecondsSinceEpoch >
             TraduoraStorageManager.getExpiredDate()) {
@@ -34,7 +35,6 @@ class Traduora {
   }
 
   static Future<bool> generateFirstLoading() async {
-    await TraduoraStorageManager.initalize();
     bool authencated = await TraduoraManager.authenticateTraduora();
     if (authencated) {
       await TraduoraManager.fetchSupportedLocale();
@@ -52,12 +52,11 @@ class Traduora {
         ? locale.languageCode
         : locale.toString();
     final localeName = TraduoraHelper.canonicalizedLocale(name);
-    bool res = await TraduoraManager.initializeMessages(localeName);
-    if (res) {
+    return TraduoraManager.initializeMessages(localeName).then((_) {
       TraduoraManager.defaultLocale = localeName;
       Traduora.current = Traduora();
       return Traduora.current;
-    }
+    });
   }
 
   String getString(String key) {
@@ -69,6 +68,29 @@ class AppLocalizationDelegate extends LocalizationsDelegate<Traduora> {
   const AppLocalizationDelegate();
 
   List<Locale> get supportedLocales {
+//    if (TraduoraManager.supportedLocale != null ||
+//        TraduoraManager.supportedLocale.isNotEmpty) {
+//      List<Locale> supportedLocales = [];
+//      for (LocaleModel item in TraduoraManager.supportedLocale) {
+//        List<String> stringSplit;
+//        if (item.code.contains("_")) {
+//          stringSplit = item.code.split("_");
+//          for (String item in stringSplit) {
+//            item.replaceAll("_", "");
+//          }
+//        }
+//        if (stringSplit != null || stringSplit.isNotEmpty) {
+//          supportedLocales.add(Locale.fromSubtags(
+//              languageCode: stringSplit[0],
+//              countryCode: stringSplit[1],
+//              scriptCode: item.language));
+//        } else {
+//          supportedLocales.add(Locale.fromSubtags(
+//              languageCode: item.code, scriptCode: item.language));
+//        }
+//      }
+//      return supportedLocales;
+//    }
     return const <Locale>[
       Locale.fromSubtags(
           languageCode: 'vi', countryCode: 'VN', scriptCode: "Tiếng Việt"),
@@ -83,7 +105,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<Traduora> {
   Future<Traduora> load(Locale locale) => Traduora.load(locale);
 
   @override
-  bool shouldReload(AppLocalizationDelegate old) => false;
+  bool shouldReload(AppLocalizationDelegate old) => this != old;
 
   bool _isSupported(Locale locale) {
     if (locale != null) {
