@@ -38,33 +38,29 @@ class ApiProvider {
   }
 
   RestClient initRestClient() {
-//    if (Platform.isAndroid) {
-//      (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-//          (client) {
-//        // Hook into the findProxy callback to set the client's proxy.
-//        // This is a workaround to allow Charles to receive
-//        // SSL payloads when your app is running on Android.
-//        client.badCertificateCallback =
-//            (X509Certificate cert, String host, int port) => Platform.isAndroid;
-//      };
-//      if (kDebugMode) {
-//        _dio.interceptors.add(PrettyDioLogger(
-//          requestHeader: true,
-//          requestBody: true,
-//          responseBody: true,
-//          responseHeader: false,
-//          error: true,
-//          compact: true,
-//          maxWidth: 90,
-//        ));
-//      }
-//    }
+    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (client) {
+      // Hook into the findProxy callback to set the client's proxy.
+      // This is a workaround to allow Charles to receive
+      // SSL payloads when your app is running on Android.
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+    };
+    if (kDebugMode) {
+      _dio.interceptors.add(PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+        error: true,
+        compact: true,
+        maxWidth: 90,
+      ));
+    }
 
     _options.connectTimeout = TIME_OUT;
     _options.receiveTimeout = TIME_OUT;
     _options.sendTimeout = TIME_OUT;
-    _options.headers["accept"] = "application/json";
-    _options.headers["Content-Type"] = "application/json";
     _dio.options = _options;
 
     try {

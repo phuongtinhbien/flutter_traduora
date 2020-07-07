@@ -1,13 +1,14 @@
-import 'package:localstorage/localstorage.dart';
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 const String TOKEN = "token";
 const String EXPIRED_TOKEN_DATE = "expired_token_date";
 const String PREFIX = "traduora";
-const String TRADUORA_STORAGE_KEY = "traduora_storage_key";
 
 class TraduoraStorageManager {
   static TraduoraStorageManager _instance;
-  static LocalStorage preferences;
+  static SharedPreferences preferences;
 
   static Future<TraduoraStorageManager> getInstance() async {
     if (_instance == null) {
@@ -21,37 +22,39 @@ class TraduoraStorageManager {
     if (_instance == null) {
       _instance = TraduoraStorageManager();
       if (preferences == null) {
-        preferences = new LocalStorage("traduora_storage_key");
-        await preferences.ready;
+        preferences = await SharedPreferences.getInstance();
       }
     }
   }
 
   static storeToken(String token) {
-    preferences.setItem(TOKEN, token ?? "");
+    return preferences.setString(TOKEN, token ?? "");
   }
 
   static String getToken() {
-    return preferences.getItem(TOKEN) ?? "";
+    return preferences.getString(TOKEN)??"";
   }
 
   static storeExpiredDate(int date) {
-    preferences.setItem(EXPIRED_TOKEN_DATE, date);
+   return preferences.setInt(EXPIRED_TOKEN_DATE, date);
   }
 
   static int getExpiredDate() {
-    return preferences.getItem(EXPIRED_TOKEN_DATE) ?? 0;
+    return preferences.getInt(EXPIRED_TOKEN_DATE)?? 0;
   }
 
   static storeExportTranslation(String localeCode, data) {
-    preferences.setItem("${PREFIX}_${localeCode}", data);
+    return preferences.setString("${PREFIX}_${localeCode}", data);
+    preferences.commit();
   }
 
   static dynamic getTranslation(String localeCode) {
-    final value = preferences.getItem("${PREFIX}_${localeCode}");
+    final String value = preferences.getString("${PREFIX}_${localeCode}");
     if (value != null) {
-      return value;
+      return jsonDecode(value);
     }
     return null;
   }
+
+
 }
