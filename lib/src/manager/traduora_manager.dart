@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_traduora/flutter_traduora.dart';
 import 'package:flutter_traduora/src/data/request/authenticate_request.dart';
@@ -13,25 +14,18 @@ const String FORMAT_EXPORT = "jsonflat";
 
 class TraduoraManager {
   static String defaultLocale;
+  static List<String> localPathStrings= [];
   static String systemLocale = 'en_US';
   static var currentTranslation;
   static ApiProvider apiProvider = new ApiProvider();
 
-  static List<Locale> supportedLocale = [
-    Locale.fromSubtags(
-      languageCode: 'vi',
-      countryCode: 'VN',
-    ),
-    Locale.fromSubtags(
-      languageCode: 'en',
-    ),
-  ];
+  static List<Locale> supportedLocales = [];
 
   static Future<bool> initializeMessages(String localeName) async {
     try {
       print("initializeMessages");
       var availableLocale = TraduoraHelper.verifiedLocale(localeName, (locale) {
-        return supportedLocale
+        return supportedLocales
             .any((element) => localeName.contains(element.languageCode));
       }, onFailure: (_) => null);
       if (availableLocale == null) {
@@ -44,6 +38,10 @@ class TraduoraManager {
         currentTranslation = lib;
         return true;
       } else {
+        if (localPathStrings.isNotEmpty){
+          currentTranslation = await loadLocalTraduora(availableLocale, TraduoraHelper.findPathString(availableLocale));
+          return true;
+        }
         return false;
       }
     } catch (ignore) {
@@ -94,12 +92,12 @@ class TraduoraManager {
   }
 
   static Future<bool> fetchAllMessages() async {
-    if (supportedLocale.isNotEmpty) {
+    if (supportedLocales.isNotEmpty) {
       try {
-        for (int i = 0; i < supportedLocale.length; i++) {
-          var availableLocale = supportedLocale[i].languageCode;
-          if (supportedLocale[i].countryCode != null && supportedLocale[i].countryCode.isNotEmpty){
-            availableLocale = availableLocale+"_"+supportedLocale[i].countryCode;
+        for (int i = 0; i < supportedLocales.length; i++) {
+          var availableLocale = supportedLocales[i].languageCode;
+          if (supportedLocales[i].countryCode != null && supportedLocales[i].countryCode.isNotEmpty){
+            availableLocale = availableLocale+"_"+supportedLocales[i].countryCode;
           }
           fetchMessages(availableLocale);
         }
@@ -131,5 +129,18 @@ class TraduoraManager {
 
       return false;
     }
+  }
+
+  static dynamic loadLocalTraduora(String availableLocale, String pathString) async {
+    if (availableLocale == null || availableLocale.isEmpty){
+      //TODO add throw Exception
+      throw ArgumentError('Invalid locale "$availableLocale"');
+    }
+    if (pathString == null || pathString.isEmpty) {
+      //TODO add throw Exception
+      throw ArgumentError('Invalid pathString "$pathString". File name should be intl_{name}');
+    }
+    String data = await rootBundle.loadString(pathString);
+    return json.decode(data);
   }
 }

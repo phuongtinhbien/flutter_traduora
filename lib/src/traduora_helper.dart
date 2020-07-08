@@ -55,4 +55,11 @@ class TraduoraHelper {
     if (aLocale.length < 2) return aLocale;
     return aLocale.substring(0, 2).toLowerCase();
   }
+  static String findPathString(String localeName){
+    if (TraduoraManager.localPathStrings != null && TraduoraManager.localPathStrings.isNotEmpty){
+      return TraduoraManager.localPathStrings.where((element) => element.contains(localeName)).toList()[0];
+    } else {
+      throw  Exception('Notfound');
+    }
+  }
 }

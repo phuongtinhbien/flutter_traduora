@@ -17,22 +17,34 @@ class Traduora {
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
-  static initalize(
-      {traduoraUrl, grantType, projectId, clientId, secretKey,List<LocaleModel> supportedLocale, String defaultLocale}) async {
+  static initalize({traduoraUrl,
+    grantType,
+    projectId,
+    clientId,
+    secretKey,
+    List<Locale> supportedLocale,
+    String defaultLocale,
+    List<String> pathString}) async {
     TRADUORA_URL = traduoraUrl;
     GRANT_TYPE = grantType;
     PROJECT_ID = projectId;
     CLIENT_ID = clientId;
     SECRET_KEY = secretKey;
+    TraduoraManager.supportedLocales = supportedLocale;
     TraduoraManager.defaultLocale = defaultLocale;
+    TraduoraManager.localPathStrings = pathString;
     await TraduoraStorageManager.initalize();
     await Traduora.loadTraduora();
   }
 
   static loadTraduora() async {
     try {
-      if (TraduoraStorageManager.getToken().isEmpty ||
-          DateTime.now().millisecond >
+      if (TraduoraStorageManager
+          .getToken()
+          .isEmpty ||
+          DateTime
+              .now()
+              .millisecond >
               TraduoraStorageManager.getExpiredDate()) {
         bool authencated = await TraduoraManager.authenticateTraduora();
         if (authencated) {
@@ -40,6 +52,9 @@ class Traduora {
 //        await TraduoraManager.fetchSupportedLocale();
           TraduoraManager.fetchAllMessages();
           return true;
+        } else {
+          TraduoraManager.loadLocalTraduora(TraduoraManager.defaultLocale,
+              TraduoraHelper.findPathString(TraduoraManager.defaultLocale));
         }
       } else {
         TraduoraManager.fetchAllMessages();
@@ -78,38 +93,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<Traduora> {
   const AppLocalizationDelegate();
 
   List<Locale> get supportedLocales {
-//    if (TraduoraManager.supportedLocale != null ||
-//        TraduoraManager.supportedLocale.isNotEmpty) {
-//      List<Locale> supportedLocales = [];
-//      for (LocaleModel item in TraduoraManager.supportedLocale) {
-//        List<String> stringSplit;
-//        if (item.code.contains("_")) {
-//          stringSplit = item.code.split("_");
-//          for (String item in stringSplit) {
-//            item.replaceAll("_", "");
-//          }
-//        }
-//        if (stringSplit != null || stringSplit.isNotEmpty) {
-//          supportedLocales.add(Locale.fromSubtags(
-//              languageCode: stringSplit[0],
-//              countryCode: stringSplit[1],
-//              scriptCode: item.language));
-//        } else {
-//          supportedLocales.add(Locale.fromSubtags(
-//              languageCode: item.code, scriptCode: item.language));
-//        }
-//      }
-//      return supportedLocales;
-//    }
-    return const <Locale>[
-      Locale.fromSubtags(
-        languageCode: 'vi',
-        countryCode: 'VN',
-      ),
-      Locale.fromSubtags(
-        languageCode: 'en',
-      ),
-    ];
+    return TraduoraManager.supportedLocales;
   }
 
   @override
