@@ -32,18 +32,10 @@ class TraduoraManager {
         return false;
       }
       print("availableLocale:" + availableLocale);
-      var lib = TraduoraStorageManager.getTranslation(availableLocale);
-      print("lib: "+ lib.toString());
-      if (lib != null && lib.isNotEmpty) {
-        currentTranslation = lib;
-        return true;
-      } else {
-        if (localPathStrings.isNotEmpty){
-          currentTranslation = await loadLocalTraduora(availableLocale, TraduoraHelper.findPathString(availableLocale));
-          return true;
-        }
-        return false;
-      }
+      await loadLocalTraduora(availableLocale);
+      loadRemoteTraduora(availableLocale);
+
+
     } catch (ignore) {
       print("traduora: " + ignore.toString());
     }
@@ -51,18 +43,32 @@ class TraduoraManager {
     print("initializeMessages");
   }
 
-  static loadTraduora(String localName) async {
+  static loadRemoteTraduora(String localName) async {
     if (TraduoraStorageManager.getToken().isEmpty ||
         DateTime.now().millisecondsSinceEpoch >
             TraduoraStorageManager.getExpiredDate()) {
       bool authencated = await TraduoraManager.authenticateTraduora();
       if (authencated) {
         await fetchMessages(localName);
-        fetchAllMessages();
+//        fetchAllMessages();
         return true;
       }
     } else {
-      fetchAllMessages();
+//      fetchAllMessages();
+    }
+  }
+
+  static loadLocalTraduora (String localName) async {
+    var lib = TraduoraStorageManager.getTranslation(localName);
+    if (lib != null && lib.isNotEmpty) {
+      currentTranslation = lib;
+      return true;
+    } else {
+      if (localPathStrings.isNotEmpty){
+        currentTranslation = await loadLocalFileTraduora(localName, TraduoraHelper.findPathString(localName));
+        return true;
+      }
+      return false;
     }
   }
 
@@ -131,7 +137,7 @@ class TraduoraManager {
     }
   }
 
-  static dynamic loadLocalTraduora(String availableLocale, String pathString) async {
+  static dynamic loadLocalFileTraduora(String availableLocale, String pathString) async {
     if (availableLocale == null || availableLocale.isEmpty){
       //TODO add throw Exception
       throw ArgumentError('Invalid locale "$availableLocale"');

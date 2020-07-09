@@ -34,7 +34,7 @@ class Traduora {
     TraduoraManager.defaultLocale = defaultLocale;
     TraduoraManager.localPathStrings = pathString;
     await TraduoraStorageManager.initalize();
-    await Traduora.loadTraduora();
+//    await Traduora.loadTraduora();
   }
 
   static loadTraduora() async {
@@ -53,7 +53,7 @@ class Traduora {
           TraduoraManager.fetchAllMessages();
           return true;
         } else {
-          TraduoraManager.loadLocalTraduora(TraduoraManager.defaultLocale,
+          TraduoraManager.loadLocalFileTraduora(TraduoraManager.defaultLocale,
               TraduoraHelper.findPathString(TraduoraManager.defaultLocale));
         }
       } else {
