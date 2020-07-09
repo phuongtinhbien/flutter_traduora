@@ -78,7 +78,7 @@ class TraduoraManager {
         await TraduoraStorageManager.storeToken(response.accessToken);
         await TraduoraStorageManager.storeExpiredDate(
             DateTime.now().millisecond +
-                int.parse(response.expiresIn.replaceAll("s", "")));
+                int.parse(response.expiresIn.replaceAll("s", ""))*1000);
         if (TraduoraStorageManager.getToken().isNotEmpty) {
           apiProvider = new ApiProvider();
           return true;
